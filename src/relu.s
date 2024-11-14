@@ -25,11 +25,20 @@
 relu:
     li t0, 1             
     blt a1, t0, error     
-    li t1, 0             
+    li t1, 0
 
 loop_start:
     # TODO: Add your own implementation
-
+    beq a1, t1, return
+    lw t2, 0(a0)
+    bge t2, zero, pass
+    sw zero, 0(a0)
+pass:
+    addi a0, a0, 4
+    addi t1, t1, 1
+    jal zero, loop_start
+return:
+    jr ra
 error:
     li a0, 36          
     j exit          
