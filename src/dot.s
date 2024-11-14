@@ -32,42 +32,17 @@ dot:
     blt a4, t0, error_terminate  
 
     li t0, 0            
-    li t1, 0         
+    li t1, 0
+
+    slli a3, a3, 2
+    slli a4, a4, 2
 
 loop_start:
     bge t1, a2, loop_end
     # TODO: Add your own implementation
 
-    # t2 = i * stride0, t3 = i * stride1
-    # Prologue
-    addi sp, sp, -12
-    sw a0, 0(sp)
-    sw a1, 4(sp)
-    sw ra, 8(sp)
-
-    mv a0, t1
-    mv a1, a3
-    jal ra mul_32
-    slli a0, a0, 2
-    mv t2, a0
-
-    mv a0, t1
-    mv a1, a4
-    jal ra mul_32
-    slli a0, a0, 2
-    mv t3, a0
-
-    # Epilogue
-    lw a0, 0(sp)
-    lw a1, 4(sp)
-    lw ra, 8(sp)
-    addi sp, sp, 12
-
-    add t4, a0, t2
-    add t5, a1, t3
-
-    lw t2, 0(t4)
-    lw t3, 0(t5)
+    lw t2, 0(a0)
+    lw t3, 0(a1)
 
     # t0 = sum(arr0[i * stride0] * arr1[i * stride1])
     # Prologue
@@ -78,8 +53,7 @@ loop_start:
 
     mv a0, t2
     mv a1, t3
-    jal ra mul_32
-
+    jal ra mul_func
     add t0, t0, a0
 
     # Epilogue
@@ -88,10 +62,11 @@ loop_start:
     lw ra, 8(sp)
     addi sp, sp, 12
 
-    # t1++
+    add a0, a0, a3
+    add a1, a1, a4
+
     addi t1, t1, 1
     j loop_start
-
 
 loop_end:
     mv a0, t0
@@ -108,35 +83,33 @@ set_error_36:
 
 # input a0, a1
 # output a0
-mul_32:
+mul_func:
     # Prologue
-    addi sp, sp, -16
-    sw ra, 0(sp)
-    sw s0, 4(sp)
-    sw s1, 8(sp)
-    sw s2, 12(sp)
+    addi sp, sp, -12
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
 
     #initialize
     li s2, 0
     li s0, 32
 mul_loop:
     andi s1, a1, 1
-    beq s1, zero, skip_add
+    beqz s1, skip_add
 
     add s2, s2, a0
 skip_add:
     slli a0, a0, 1
     srli a1, a1, 1
-    addi s0, s0, -1
-    bnez s0, mul_loop
+    bnez a1, mul_loop
 
     mv a0, s2
 
     # Epilogue
-    lw ra, 0(sp)
-    lw s0, 4(sp)
-    lw s1, 8(sp)
-    lw s2, 12(sp)
-    addi sp, sp, 16
-    jr ra
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    addi sp, sp, 12
+
+    ret
     
