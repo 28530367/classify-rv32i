@@ -63,6 +63,23 @@ write_matrix:
 
     # mul s4, s2, s3   # s4 = total elements
     # FIXME: Replace 'mul' with your own implementation
+    # Prologue
+    addi sp, sp, -12
+    sw a0, 0(sp)
+    sw a1, 4(sp)
+    sw ra, 8(sp)
+
+    mv a0, s2
+    mv a1, s3
+    jal ra mul_32
+    mv s4, a0
+
+    # Epilogue
+    lw a0, 0(sp)
+    lw a1, 4(sp)
+    lw ra, 8(sp)
+    addi sp, sp, 12
+    # ==============================================================================
 
     # write matrix data to file
     mv a0, s0
@@ -113,3 +130,38 @@ error_exit:
     lw s4, 20(sp)
     addi sp, sp, 44
     j exit
+
+# input a0, a1
+# output a0
+mul_32:
+    # Prologue
+    addi sp, sp, -16
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+    sw s1, 8(sp)
+    sw s2, 12(sp)
+
+    #initialize
+    li s2, 0
+    li s0, 32
+mul_loop:
+    andi s1, a1, 1
+    beq s1, zero, skip_add
+
+    add s2, s2, a0
+skip_add:
+    slli a0, a0, 1
+    srli a1, a1, 1
+    addi s0, s0, -1
+    bnez s0, mul_loop
+
+    mv a0, s2
+
+    # Epilogue
+    lw ra, 0(sp)
+    lw s0, 4(sp)
+    lw s1, 8(sp)
+    lw s2, 12(sp)
+    addi sp, sp, 16
+    jr ra
+    

@@ -30,8 +30,8 @@ relu:
 loop_start:
     # TODO: Add your own implementation
     beq a1, t1, return
-    lw t2, 0(a0)
-    bge t2, zero, pass
+    lw t0, 0(a0)
+    bge t0, zero, pass
     sw zero, 0(a0)
 pass:
     addi a0, a0, 4

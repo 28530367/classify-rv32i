@@ -34,9 +34,9 @@ loop_start:
     beq a1, t2, return
     addi t2, t2, 1
     addi a0, a0, 4
-    lw t3, 0(a0)
-    bge t0, t3, loop_start
-    mv t0, t3
+    lw t6, 0(a0)
+    bge t0, t6, loop_start
+    mv t0, t6
     mv t1, t2
     addi t1, t1, -1
     jal zero, loop_start

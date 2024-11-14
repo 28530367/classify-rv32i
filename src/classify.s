@@ -166,7 +166,23 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s8)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # Prologue
+    addi sp, sp, -8
+    sw a1, 0(sp)
+    sw ra, 4(sp)
+
+    mv a0, t0
+    mv a1, t1
+    jal ra mul_32
+
+    # Epilogue
+    lw a1, 0(sp)
+    lw ra, 4(sp)
+    addi sp, sp, 8
+    # =====================================
+
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -205,7 +221,22 @@ classify:
     lw t1, 0(s8)
     # mul a1, t0, t1 # length of h array and set it as second argument
     # FIXME: Replace 'mul' with your own implementation
-    
+    # Prologue
+    addi sp, sp, -8
+    sw a0, 0(sp)
+    sw ra, 4(sp)
+
+    mv a0, t0
+    mv a1, t1
+    jal ra mul_32
+    mv a1, a0
+
+    # Epilogue
+    lw a0, 0(sp)
+    lw ra, 4(sp)
+    addi sp, sp, 8
+    # =====================================
+
     jal relu
     
     lw a0, 0(sp)
@@ -226,7 +257,23 @@ classify:
     
     lw t0, 0(s3)
     lw t1, 0(s6)
-    # mul a0, t0, t1 # FIXME: Replace 'mul' with your own implementation
+    # mul a0, t0, t1 
+    # FIXME: Replace 'mul' with your own implementation
+    # Prologue
+    addi sp, sp, -8
+    sw a1, 0(sp)
+    sw ra, 4(sp)
+
+    mv a0, t0
+    mv a1, t1
+    jal ra mul_32
+
+    # Epilogue
+    lw a1, 0(sp)
+    lw ra, 4(sp)
+    addi sp, sp, 8
+    # =====================================
+
     slli a0, a0, 2
     jal malloc 
     beq a0, x0, error_malloc
@@ -286,9 +333,24 @@ classify:
     mv a0, s10 # load o array into first arg
     lw t0, 0(s3)
     lw t1, 0(s6)
-    mul a1, t0, t1 # load length of array into second arg
+    # mul a1, t0, t1 # load length of array into second arg
     # FIXME: Replace 'mul' with your own implementation
+    # Prologue
+    addi sp, sp, -8
+    sw a0, 0(sp)
+    sw ra, 4(sp)
+
+    mv a0, t0
+    mv a1, t1
+    jal ra mul_32
+    mv a1, a0
     
+    # Epilogue
+    lw a0, 0(sp)
+    lw ra, 4(sp)
+    addi sp, sp, 8
+    # =====================================
+
     jal argmax
     
     mv t0, a0 # move return value of argmax into t0
@@ -384,3 +446,38 @@ error_args:
 error_malloc:
     li a0, 26
     j exit
+
+# input a0, a1
+# output a0
+mul_32:
+    # Prologue
+    addi sp, sp, -16
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+    sw s1, 8(sp)
+    sw s2, 12(sp)
+
+    #initialize
+    li s2, 0
+    li s0, 32
+mul_loop:
+    andi s1, a1, 1
+    beq s1, zero, skip_add
+
+    add s2, s2, a0
+skip_add:
+    slli a0, a0, 1
+    srli a1, a1, 1
+    addi s0, s0, -1
+    bnez s0, mul_loop
+
+    mv a0, s2
+
+    # Epilogue
+    lw ra, 0(sp)
+    lw s0, 4(sp)
+    lw s1, 8(sp)
+    lw s2, 12(sp)
+    addi sp, sp, 16
+    jr ra
+    
