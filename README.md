@@ -2,7 +2,7 @@
 > This is my GitHub, which includes explaining the functionality of the essential operations and detailing how I addressed and overcame the challenges.
 
 ## Result
-> After execute `bash ./test.sh all`
+After execute `bash ./test.sh all`
 ```
 test_abs_minus_one (__main__.TestAbs.test_abs_minus_one) ... ok
 test_abs_one (__main__.TestAbs.test_abs_one) ... ok
@@ -60,10 +60,10 @@ OK
 > My functions include dot product, matrix multiplication, element-wise ReLU, and argmax.
 
 ### Task 1: ReLU
-> Traverse all the values in a one-dimensional array and check each value one by one to determine if it is less than zero. If a value is less than zero, replace it with zero. Once all the values have been checked, exit the function.
+Traverse all the values in a one-dimensional array and check each value one by one to determine if it is less than zero. If a value is less than zero, replace it with zero. Once all the values have been checked, exit the function.
 
 ### Task 2: ArgMax
-> First, `t0` is set to the first element of the one-dimensional array. `t6` is used to retrieve the next element. Check if `t0` is greater than or equal to `t6`. If `t0` is greater than or equal to `t6`, `t0` remains unchanged, and `t6` continues to retrieve the next element. When `t6` becomes greater than `t0`, the value of `t6` replaces `t0`, and `t1` is used to store the index of `t6` in the one-dimensional array. After `t6` has traversed all elements of the array, `a0` takes the value of `t1` (the index of the maximum value). Finally, the function exits.
+First, `t0` is set to the first element of the one-dimensional array. `t6` is used to retrieve the next element. Check if `t0` is greater than or equal to `t6`. If `t0` is greater than or equal to `t6`, `t0` remains unchanged, and `t6` continues to retrieve the next element. When `t6` becomes greater than `t0`, the value of `t6` replaces `t0`, and `t1` is used to store the index of `t6` in the one-dimensional array. After `t6` has traversed all elements of the array, `a0` takes the value of `t1` (the index of the maximum value). Finally, the function exits.
 
 ### Task 3.1: Dot Product
 > mul_func & dot
@@ -98,7 +98,7 @@ skip_add:
 
     ret
 ```
-> Same as 'a0 = a0 * a1'. The algorithm is like 
+Same as 'a0 = a0 * a1'. The algorithm is like:
 ```
 a0 == 10111
 a1 == 00011
@@ -111,14 +111,14 @@ a1 == 00011
     ---------
     = 1000101
 ```
-> The process is similar to decimal multiplication but works in binary.
+The process is similar to decimal multiplication but works in binary.
 Multiply the bits of `a1` by `a0`, starting from the least significant bit (rightmost bit) of `a1`.
 For each bit in `a1`:
 If the bit is `1`, write down `a0` shifted left by the position of the bit.
 Sum up all the results of the shifted values.
 
 #### dot
-> First, I calculate the Skip address in the first array and the Skip address in the second array to determine the address of the next number in each iteration of the loop. In each loop, the value at the respective position is multiplied using my `mul_func` function, and the result is added to `t0` (the temporary result). When the counter (`t1`) equals the Number of elements to process, the value in `t0` is stored in `a0`, and the function exits.
+First, I calculate the Skip address in the first array and the Skip address in the second array to determine the address of the next number in each iteration of the loop. In each loop, the value at the respective position is multiplied using my `mul_func` function, and the result is added to `t0` (the temporary result). When the counter (`t1`) equals the Number of elements to process, the value in `t0` is stored in `a0`, and the function exits.
 
 ### Task 3.2: Matrix Multiplication
 ```
@@ -142,7 +142,7 @@ outer_loop_end:
 
     jr ra
 ```
-> Based on the existing code, I need to design the `inner_loop_end:` and `outer_loop_end:` labels.
+Based on the existing code, I need to design the `inner_loop_end:` and `outer_loop_end:` labels.
 
 It is also clear that after `inner_loop_end:`, the program should jump to outer_loop_start: to execute the next iteration of the loop. At this point, I need to increment the counter `s0` by `1` and calculate the addresses for the matrix elements `a21, a31, a41, ..., am1` (for a matrix `A(m*n)`) to prepare for the next iteration of the inner loop.
 
