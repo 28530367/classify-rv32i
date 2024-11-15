@@ -327,13 +327,14 @@ done:
 ```
 Example:
 
-In binary, 1 is represented as: `00000000 00000000 00000000 00000001`
-Switch `1` to `-1`:
+In binary, 1 is represented as: `00000000 00000000 00000000 00000001`.
+
+To switch `1` to `-1`:
 1. Start with `1`: `00000000 00000000 00000000 00000001`
 2. Invert all bits: `11111111 11111111 11111111 11111110`
 3. Add `1`: `11111111 11111111 11111111 11111111`
 
-So negative numbers to positive numbers are reversed
+So negative numbers to positive numbers are reversed:
 1. Start with `-1`: `11111111 11111111 11111111 11111111` 
 2. Sub `1`: `11111111 11111111 11111111 11111110` same as `addi t0, t0, -1`
 3. Invert all bits: `00000000 00000000 00000000 00000001` same as `xori t0, t0, -1`
