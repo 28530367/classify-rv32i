@@ -451,31 +451,28 @@ error_malloc:
 # output a0
 mul_func:
     # Prologue
-    addi sp, sp, -12
+    addi sp, sp, -8
     sw s0, 0(sp)
     sw s1, 4(sp)
-    sw s2, 8(sp)
 
     #initialize
-    li s2, 0
-    li s0, 32
+    li s0, 0
 mul_loop:
     andi s1, a1, 1
     beqz s1, skip_add
 
-    add s2, s2, a0
+    add s0, s0, a0
 skip_add:
     slli a0, a0, 1
     srli a1, a1, 1
     bnez a1, mul_loop
 
-    mv a0, s2
+    mv a0, s0
 
     # Epilogue
     lw s0, 0(sp)
     lw s1, 4(sp)
-    lw s2, 8(sp)
-    addi sp, sp, 12
+    addi sp, sp, 8
 
     ret
     
