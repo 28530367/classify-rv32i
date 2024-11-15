@@ -326,6 +326,7 @@ done:
     jr ra
 ```
 Example:
+
 In binary, 1 is represented as: `00000000 00000000 00000000 00000001`
 Switch `1` to `-1`:
 1. Start with `1`: `00000000 00000000 00000000 00000001`
