@@ -2,7 +2,7 @@
 > This is my GitHub, which includes explaining the functionality of the essential operations and detailing how I addressed and overcame the challenges.
 
 ## Result
-After execute `bash ./test.sh all`
+After execute `bash ./test.sh all`.
 ```
 test_abs_minus_one (__main__.TestAbs.test_abs_minus_one) ... ok
 test_abs_one (__main__.TestAbs.test_abs_one) ... ok
@@ -147,3 +147,163 @@ Based on the existing code, I need to design the `inner_loop_end:` and `outer_lo
 It is also clear that after `inner_loop_end:`, the program should jump to outer_loop_start: to execute the next iteration of the loop. At this point, I need to increment the counter `s0` by `1` and calculate the addresses for the matrix elements `a21, a31, a41, ..., am1` (for a matrix `A(m*n)`) to prepare for the next iteration of the inner loop.
 
 When entering `outer_loop_end:`, I need to restore all s registers to their original state and then exit the function.
+
+## Part B: File Operations and Main\
+> In this section, all I need to do is replace `mul` with my own function, `mul_func`.
+
+### Task 1: Read Matrix
+> I have previously explained the `mul_func`.
+```
+# input a0, a1
+# output a0
+mul_func:
+    # Prologue
+    addi sp, sp, -8
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+
+    #initialize
+    li s0, 0
+mul_loop:
+    andi s1, a1, 1
+    beqz s1, skip_add
+
+    add s0, s0, a0
+skip_add:
+    slli a0, a0, 1
+    srli a1, a1, 1
+    bnez a1, mul_loop
+
+    mv a0, s0
+
+    # Epilogue
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    addi sp, sp, 8
+
+    ret
+```
+Replace `mul` with my own function, `mul_func`.
+```
+# mul s1, t1, t2   # s1 is number of elements
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -12
+sw a0, 0(sp)
+sw a1, 4(sp)
+sw ra, 8(sp)
+
+mv a0, t1
+mv a1, t2
+jal ra mul_func
+mv s1, a0
+
+# Epilogue
+lw a0, 0(sp)
+lw a1, 4(sp)
+lw ra, 8(sp)
+addi sp, sp, 12
+```
+I store `a0`, `a1`, and `ra` so that after calling `mul_func`, their values can be restored. Before the `# Epilogue` section, I copy the output result `a0` into `s1` to achieve `mul s1, t1, t2`.
+### Task 2: Write Matrix
+The calling method and usage of mul_func are the same.
+```
+# mul s4, s2, s3   # s4 = total elements
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -12
+sw a0, 0(sp)
+sw a1, 4(sp)
+sw ra, 8(sp)
+
+mv a0, s2
+mv a1, s3
+jal ra mul_func
+mv s4, a0
+
+# Epilogue
+lw a0, 0(sp)
+lw a1, 4(sp)
+lw ra, 8(sp)
+addi sp, sp, 12
+```
+### Task 3: Classification
+The calling method and usage of mul_func are the same.
+First part:
+```
+# mul a0, t0, t1 
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -8
+sw a1, 0(sp)
+sw ra, 4(sp)
+
+mv a0, t0
+mv a1, t1
+jal ra mul_func
+
+# Epilogue
+lw a1, 0(sp)
+lw ra, 4(sp)
+addi sp, sp, 8
+```
+Second part:
+```
+# mul a1, t0, t1 # length of h array and set it as second argument
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -8
+sw a0, 0(sp)
+sw ra, 4(sp)
+
+mv a0, t0
+mv a1, t1
+jal ra mul_func
+mv a1, a0
+
+# Epilogue
+lw a0, 0(sp)
+lw ra, 4(sp)
+addi sp, sp, 8
+```
+Third part:
+```
+# mul a0, t0, t1 
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -8
+sw a1, 0(sp)
+sw ra, 4(sp)
+
+mv a0, t0
+mv a1, t1
+jal ra mul_func
+
+# Epilogue
+lw a1, 0(sp)
+lw ra, 4(sp)
+addi sp, sp, 8
+```
+Fourth part:
+```
+# mul a1, t0, t1 # load length of array into second arg
+# FIXME: Replace 'mul' with your own implementation
+# Prologue
+addi sp, sp, -8
+sw a0, 0(sp)
+sw ra, 4(sp)
+
+mv a0, t0
+mv a1, t1
+jal ra mul_func
+mv a1, a0
+
+# Epilogue
+lw a0, 0(sp)
+lw ra, 4(sp)
+addi sp, sp, 8
+```
+
+## Other
+> Other `.s` file
+### abs.s
